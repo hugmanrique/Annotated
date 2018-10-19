@@ -12,9 +12,32 @@
 - Supports annotation construction from a `Map<String, Object>` representation of the [annotation elements](https://docs.oracle.com/javase/tutorial/java/annotations/basics.html)
 - High performance: all reflection objects are grabbed and cached during the JVM startup
 
-## Documentation
+## Getting started
 
-Annotated only supports **Java 8**.
+Install Annotated using [`Maven`](https://maven.apache.org/) by adding the JitPack repository to your `pom.xml` file:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+Next, add the `annotated` dependency:
+
+```xml
+<dependency>
+    <groupId>com.github.hugmanrique</groupId>
+    <artifactId>Annotated</artifactId>
+    <version>master-SNAPSHOT</version>
+</dependency>
+```
+
+Please note Annotated only supports **Java 8**.
+
+## Documentation
 
 > TODO
 
