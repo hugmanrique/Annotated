@@ -40,7 +40,7 @@ public class ClassAnnotationTest {
         assertNull("Class annotation before injection must be null", annotation);
 
         DummyAnnotation newAnnotation = getDummyAnnotation(OriginAnnotationClass.class);
-        Annotated.putAnnotation(DummyClass.class, DummyAnnotation.class, newAnnotation);
+        Annotated.addAnnotation(DummyClass.class, DummyAnnotation.class, newAnnotation);
 
         annotation = getDummyAnnotation(DummyClass.class);
 
@@ -50,14 +50,12 @@ public class ClassAnnotationTest {
 
     @Test
     public void testElementsMap() {
-        DummyAnnotation annotation = getDummyAnnotation(ElementsClass.class);
-
         Map<String, Object> elements = new HashMap<>();
         elements.put("value", "abc");
 
-        Annotated.putAnnotation(ElementsClass.class, DummyAnnotation.class, elements);
+        Annotated.addAnnotation(ElementsClass.class, DummyAnnotation.class, elements);
 
-        annotation = getDummyAnnotation(ElementsClass.class);
+        DummyAnnotation annotation = getDummyAnnotation(ElementsClass.class);
 
         assertNotNull("Class annotation after injection must not be null", annotation);
         assertEquals("Annotation value must be \"abc\"", "abc", annotation.value());

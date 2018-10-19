@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,24 +73,24 @@ public final class Annotated {
     private Annotated() {}
 
     /**
-     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed {@code class}.
+     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed class.
      *
-     * @param clazz the class whose annotations will be redefined
-     * @param annotationClass the new annotation's class
+     * @param clazz the class whose annotations will be modified
+     * @param annotationClass the new annotation's type
      * @param elementsMap the named elements {@link Map} representation
      */
-    public static <T extends Annotation> void putAnnotation(Class<?> clazz, Class<T> annotationClass, Map<String, Object> elementsMap) {
-        putAnnotation(clazz, annotationClass, annotationForMap(annotationClass, elementsMap));
+    public static <T extends Annotation> void addAnnotation(Class<?> clazz, Class<T> annotationClass, Map<String, Object> elementsMap) {
+        addAnnotation(clazz, annotationClass, annotationForMap(annotationClass, elementsMap));
     }
 
     /**
-     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed {@code class}.
+     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed class.
      *
-     * @param clazz the class whose annotations will be redefined
-     * @param annotationClass the new annotation's class
+     * @param clazz the class whose annotations will be modified
+     * @param annotationClass the new annotation's type
      * @param annotation the annotation instance that needs to be added to {@code class}
      */
-    public static <T extends Annotation> void putAnnotation(Class<?> clazz, Class<T> annotationClass, T annotation) {
+    public static <T extends Annotation> void addAnnotation(Class<?> clazz, Class<T> annotationClass, T annotation) {
         try {
             while (true) { // retry loop
                 int classRedefinedCount = classRedefinedCountMethod.getInt(clazz);
@@ -108,13 +109,42 @@ public final class Annotated {
         }
     }
 
-    public static <T extends Annotation> void putAnnotation(Field field, Class<T> annotationClass, Map<String, Object> elementsMap) {
-        putAnnotation(field, annotationClass, annotationForMap(annotationClass, elementsMap));
+    /**
+     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed field.
+     *
+     * @param field the field whose annotations will be modified
+     * @param annotationClass the new annotation's type
+     * @param elementsMap the annotation instance that needs to be added to {@code field}
+     */
+    public static <T extends Annotation> void addAnnotation(Field field, Class<T> annotationClass, Map<String, Object> elementsMap) {
+        addAnnotation(field, annotationClass, annotationForMap(annotationClass, elementsMap));
     }
 
-    public static <T extends Annotation> void putAnnotation(Field field, Class<T> annotationClass, T annotation) {
+    /**
+     * Adds a new {@link Annotation} of type {@code annotationClass} to the passed field.
+     *
+     * @param field the field whose annotations will be modified
+     * @param annotationClass the new annotation's type
+     * @param annotation the annotation instance that needs to be added to {@code field}
+     */
+    @SuppressWarnings({"unchecked", "ReflectionForUnavailableAnnotation"})
+    public static <T extends Annotation> void addAnnotation(Field field, Class<T> annotationClass, T annotation) {
+        // Force initialization of declaredAnnotations
+        field.getAnnotation(Annotation.class);
 
+        try {
+            Map<Class<? extends Annotation>, Annotation> annotations = (Map<Class<? extends Annotation>, Annotation>) fieldDeclaredAnnotationsField.get(field);
 
+            if (annotations.getClass() == Collections.EMPTY_MAP.getClass()) {
+                annotations = new HashMap<>();
+
+                fieldDeclaredAnnotationsField.set(field, annotations);
+            }
+
+            annotations.put(annotationClass, annotation);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("unchecked")
