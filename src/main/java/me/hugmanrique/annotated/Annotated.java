@@ -21,6 +21,8 @@ public final class Annotated {
 
     private static final Method annotationDataMethod; // Class
     private static final Field classRedefinedCountMethod; // Class
+    private static final Field executableDeclaredAnnotationsField; // Executable
+    private static final Field fieldDeclaredAnnotationsField; // Field
     private static final Field annotationsField; // AnnotationData
     private static final Field declaredAnnotationsField; // AnnotationData
     private static final Method casAnnotationDataMethod; // Atomic
@@ -54,6 +56,14 @@ public final class Annotated {
             atomicClass = Class.forName("java.lang.Class$Atomic");
             casAnnotationDataMethod = atomicClass.getDeclaredMethod("casAnnotationData", Class.class, annotationDataClass, annotationDataClass);
             casAnnotationDataMethod.setAccessible(true);
+
+            // Executable
+            executableDeclaredAnnotationsField = Executable.class.getDeclaredField("declaredAnnotations");
+            executableDeclaredAnnotationsField.setAccessible(true);
+
+            // Field
+            fieldDeclaredAnnotationsField = Field.class.getDeclaredField("declaredAnnotations");
+            fieldDeclaredAnnotationsField.setAccessible(true);
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
             throw new IllegalStateException(e);
         }
@@ -96,6 +106,14 @@ public final class Annotated {
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public static <T extends Annotation> void putAnnotation(Field field, Class<T> annotationClass, Map<String, Object> elementsMap) {
+        putAnnotation(field, annotationClass, annotationForMap(annotationClass, elementsMap));
+    }
+
+    public static <T extends Annotation> void putAnnotation(Field field, Class<T> annotationClass, T annotation) {
+
 
     }
 
