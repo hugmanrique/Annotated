@@ -59,6 +59,8 @@ public final class Annotated {
         }
     }
 
+    private Annotated() {}
+
     /**
      * Adds a new {@link Annotation} of type {@code annotationClass} to the passed {@code class}.
      *
