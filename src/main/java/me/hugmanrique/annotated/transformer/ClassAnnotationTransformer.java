@@ -17,6 +17,7 @@ import java.util.Map;
  * @author Hugo Manrique
  * @since 20/10/2018
  */
+@SuppressWarnings("unchecked")
 public final class ClassAnnotationTransformer extends AbstractAnnotationTransformer<Class<?>> {
     private static final Constructor<?> annotationDataConstructor; // Class
     private static final Method annotationDataMethod; // Class

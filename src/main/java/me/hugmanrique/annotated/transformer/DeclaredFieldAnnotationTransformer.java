@@ -3,12 +3,17 @@ package me.hugmanrique.annotated.transformer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 /**
+ * Provides a generic implementation for {@link Member} types that have
+ * an internal {@code declaredAnnotations} field.
+ *
+ * @param <K> the annotated element to be transformed
  * @author Hugo Manrique
  * @since 20/10/2018
  */
@@ -34,6 +39,7 @@ public class DeclaredFieldAnnotationTransformer<K extends AnnotatedElement> exte
             }
 
             annotations.put(annotation.annotationType(), annotation);
+            System.out.println();
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
