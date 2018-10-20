@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Hugo Manrique
  * @since 20/10/2018
  */
-interface AnnotationTransformer<K extends AnnotatedElement> {
+public interface AnnotationTransformer<K extends AnnotatedElement> {
 
     /**
      * Creates an annotation with the passed elements and adds it to the passed element.
