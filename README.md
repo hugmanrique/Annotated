@@ -25,7 +25,7 @@ Install Annotated using [`Maven`](https://maven.apache.org/) by adding the JitPa
 </repositories>
 ```
 
-Next, add the `annotated` dependency:
+Next, add the `Annotated` dependency:
 
 ```xml
 <dependency>
