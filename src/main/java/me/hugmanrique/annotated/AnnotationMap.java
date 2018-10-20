@@ -1,5 +1,7 @@
 package me.hugmanrique.annotated;
 
+import me.hugmanrique.annotated.transformer.ClassAnnotationTransformer;
+
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +13,7 @@ import java.util.Objects;
  * @author Hugo Manrique
  * @since 19/10/2018
  */
-public class AnnotationMap {
+public final class AnnotationMap {
     private final Map<Class<? extends Annotation>, Annotation> annotations;
     private final Map<Class<? extends Annotation>, Annotation> declaredAnnotations;
 
@@ -19,8 +21,8 @@ public class AnnotationMap {
     public AnnotationMap(final Object annotationData) throws IllegalAccessException {
         Objects.requireNonNull(annotationData, "Annotation data");
 
-        this.annotations = (Map<Class<? extends Annotation>, Annotation>) ClassAnnotations.annotationsField.get(annotationData);
-        this.declaredAnnotations = (Map<Class<? extends Annotation>, Annotation>) ClassAnnotations.declaredAnnotationsField.get(annotationData);
+        this.annotations = (Map<Class<? extends Annotation>, Annotation>) ClassAnnotationTransformer.annotationsField.get(annotationData);
+        this.declaredAnnotations = (Map<Class<? extends Annotation>, Annotation>) ClassAnnotationTransformer.declaredAnnotationsField.get(annotationData);
     }
 
     public AnnotationMap(Map<Class<? extends Annotation>, Annotation> annotations, Map<Class<? extends Annotation>, Annotation> declaredAnnotations) {

@@ -1,10 +1,7 @@
-package me.hugmanrique.annotated;
+package me.hugmanrique.annotated.transformer;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -12,9 +9,9 @@ import java.util.Map;
 
 /**
  * @author Hugo Manrique
- * @since 19/10/2018
+ * @since 20/10/2018
  */
-class ElementUtil {
+abstract class AbstractAnnotationTransformer<K extends AnnotatedElement> implements AnnotationTransformer<K> {
     private static final Constructor<?> annotationInvocationHandlerConstructor;
 
     static {
@@ -28,8 +25,13 @@ class ElementUtil {
         }
     }
 
+    @Override
+    public <T extends Annotation> void addAnnotation(K element, Class<T> annotationClass, Map<String, Object> elementsMap) {
+        addAnnotation(element, annotationForMap(annotationClass, elementsMap));
+    }
+
     @SuppressWarnings("unchecked")
-    public static <T extends Annotation> T annotationForMap(final Class<T> annotationClass, final Map<String, Object> elementsMap) {
+    private static <T extends Annotation> T annotationForMap(final Class<T> annotationClass, final Map<String, Object> elementsMap) {
         return (T) AccessController.doPrivileged((PrivilegedAction<Annotation>) () -> {
             InvocationHandler handler;
 

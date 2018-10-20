@@ -1,21 +1,23 @@
-package me.hugmanrique.annotated;
+package me.hugmanrique.annotated.transformer;
+
+import me.hugmanrique.annotated.AnnotationMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import static me.hugmanrique.annotated.ElementUtil.annotationForMap;
-
 /**
  * Provides utilities to modify class annotations at runtime.
+ * Supports annotations with a {@link ElementType#TYPE} target.
  *
  * @author Hugo Manrique
- * @since 19/10/2018
+ * @since 20/10/2018
  */
-public class ClassAnnotations {
+public final class ClassAnnotationTransformer extends AbstractAnnotationTransformer<Class<?>> {
     private static final Constructor<?> annotationDataConstructor; // Class
     private static final Method annotationDataMethod; // Class
     private static final Field classRedefinedCountField; // Class
@@ -51,29 +53,8 @@ public class ClassAnnotations {
         }
     }
 
-    private ClassAnnotations() {}
-
-    /**
-     * Creates an annotation with the passed elements and adds it to the passed class.
-     *
-     * @param clazz the class the annotation will be added to
-     * @param annotationClass the anotation type
-     * @param elementsMap the named elements key-value representation
-     * @throws IllegalStateException if a reflection exception occurs
-     */
-    public static <T extends Annotation> void addAnnotation(Class<?> clazz, Class<T> annotationClass, Map<String, Object> elementsMap) {
-        addAnnotation(clazz, annotationForMap(annotationClass, elementsMap));
-
-    }
-
-    /**
-     * Adds the annotation to the passed class.
-     *
-     * @param clazz the class the annotation will be added to
-     * @param annotation the annotation instance
-     * @throws IllegalStateException if a reflection exception occurs
-     */
-    public static <T extends Annotation> void addAnnotation(Class<?> clazz, T annotation) {
+    @Override
+    public <T extends Annotation> void addAnnotation(Class<?> clazz, T annotation) {
         try {
             while (true) { // Retry loop
                 int classRedefinedCount = classRedefinedCountField.getInt(clazz);
@@ -96,15 +77,8 @@ public class ClassAnnotations {
         }
     }
 
-    /**
-     * Removes the annotation with the {@code annotationClass} type from the passed class.
-     *
-     * @param clazz the class the annotation will be removed from
-     * @param annotationClass the annotation type to be removed
-     * @return the removed annotation, or {@code null} if not present
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Annotation> T removeAnnotation(Class<?> clazz, Class<T> annotationClass) {
+    @Override
+    public <T extends Annotation> T removeAnnotation(Class<?> clazz, Class<T> annotationClass) {
         if (clazz.getAnnotation(annotationClass) == null) {
             return null;
         }
@@ -132,9 +106,9 @@ public class ClassAnnotations {
 
     private static Object createAnnotationData(AnnotationMap annotationMap, int classRedefinedCount) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         return annotationDataConstructor.newInstance(
-                annotationMap.getAnnotations(),
-                annotationMap.getDeclaredAnnotations(),
-                classRedefinedCount
+            annotationMap.getAnnotations(),
+            annotationMap.getDeclaredAnnotations(),
+            classRedefinedCount
         );
     }
 }
