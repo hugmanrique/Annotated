@@ -45,13 +45,7 @@ Additional documentation for individual features can be found in the [Javadoc](h
 
 ## Building Annotated
 
-Annotated uses [Maven](https://maven.apache.org/). To perform a build, execute
-
-```bash
-mvn package
-```
-
-from within the project root directory.
+Annotated uses [Maven](https://maven.apache.org/). To perform a build, execute `mvn package` from within the project root directory.
 
 # License
 
